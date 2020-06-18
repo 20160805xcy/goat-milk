@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xcy.goatmilk.mapper.AppointmentInfoMapper">
+    <resultMap id="BaseResultMap" type="com.xcy.goatmilk.pojo.AppointmentInfo">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="mobile_number" jdbcType="VARCHAR" property="mobileNumber"/>
+        <result column="effective_form" jdbcType="DATE" property="effectiveForm"/>
+        <result column="effective_to" jdbcType="DATE" property="effectiveTo"/>
+        <result column="province" jdbcType="VARCHAR" property="province"/>
+        <result column="city" jdbcType="VARCHAR" property="city"/>
+        <result column="area" jdbcType="VARCHAR" property="area"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="create_time" jdbcType="DATE" property="createTime"/>
+        <result column="update_time" jdbcType="DATE" property="updateTime"/>
+        <result column="voided" jdbcType="INTEGER" property="voided"/>
+    </resultMap>
+
+    <select id="list" parameterType="com.xcy.goatmilk.pojo.qo.AppointmentInfoQo"
+            resultType="com.xcy.goatmilk.table.AppointmentInfoTableData">
+        SELECT *
+        FROM
+        appointment_info
+        <where>
+            <if test="userName != null and userName != ''">
+                AND user_name like concat('%',#{userName},'%')
+            </if>
+            <if test="voided != null and voided != ''">
+                AND voided = #{voided}
+            </if>
+            <if test="mobileNumber != null and mobileNumber != ''">
+                AND mobile_number like '%${mobileNumber}%'
+            </if>
+            <if test="effectiveForm != null and effectiveForm != ''">
+                AND effectiveForm >= '${effectiveForm} 00:00:00'
+            </if>
+            <if test="effectiveTo != null and effectiveTo != ''">
+                AND effectiveTo <![CDATA[<=]]> '${effectiveTo} 23:59:59'
+            </if>
+            <if test="address != null and address != ''">
+                AND address like '%${address}%'
+            </if>
+        </where>
+        ORDER BY
+        create_time DESC
+    </select>
+
+    <select id="get" parameterType="integer" resultType="com.xcy.goatmilk.pojo.dto.AppointmentInfoDto">
+    SELECT
+        *
+    FROM
+        appointment_info a
+    where a.id = #{id}
+    </select>
+
+    <delete id="deleteOneById" parameterType="integer">
+        delete from appointment_info where id = #{id}
+    </delete>
+
+    <update id="updateById" parameterType="com.xcy.goatmilk.pojo.AppointmentInfo">
+        update appointment_info
+        <set>
+            <if test="userName != null">user_name=#{userName},</if>
+            <if test="mobileNumber != null">mobile_number=#{mobileNumber},</if>
+            <if test="effectiveForm != null">effective_form=#{effectiveForm},</if>
+            <if test="effectiveTo != null">effective_to=#{effectiveTo},</if>
+            <if test="address != null">address=#{address}</if>
+            <if test="voided != null">voided=#{voided}</if>
+        </set>
+        where user_id=#{userId}
+    </update>
+
+</mapper>
